@@ -19,7 +19,7 @@ connectDB();
 
 const app = express();
 
-// Middlewares - CORS configured with dynamic origin reflection for Vercel compliance
+// Middlewares - CORS configured for dynamic origin reflection
 app.use(cors({
   origin: true,
   credentials: true
@@ -65,12 +65,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+// Standalone server listener for local development
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`=================================================`);
+    console.log(`  CampusRide Express Backend Engine Online      `);
+    console.log(`  Running on PORT: ${PORT}                          `);
+    console.log(`  Health check: http://localhost:${PORT}/api/health `);
+    console.log(`=================================================`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`=================================================`);
-  console.log(`  CampusRide Express Backend Engine Online      `);
-  console.log(`  Running on PORT: ${PORT}                          `);
-  console.log(`  Health check: http://localhost:${PORT}/api/health `);
-  console.log(`=================================================`);
-});
+// Export app for Vercel Serverless Function deployment
+module.exports = app;
