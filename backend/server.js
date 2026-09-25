@@ -19,9 +19,9 @@ connectDB();
 
 const app = express();
 
-// Middlewares
+// Middlewares - CORS configured with dynamic origin reflection for Vercel compliance
 app.use(cors({
-  origin: '*',
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
